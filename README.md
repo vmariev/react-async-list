@@ -13,6 +13,8 @@ Point it at an async function, give it a bounded height, and it handles the rest
 - **Optional custom scrollbar** that looks the same on every platform.
 - ESM + CJS + TypeScript declarations. React 18 and 19.
 
+**[Try it on CodeSandbox →](https://codesandbox.io/p/sandbox/zealous-blackwell-573gfd)** — every example below, running.
+
 ---
 
 ## Contents
@@ -88,6 +90,8 @@ export const UserList = () => {
   );
 };
 ```
+
+[Open it in a sandbox](https://codesandbox.io/p/sandbox/zealous-blackwell-573gfd) if you would rather poke at it than read.
 
 Two rules cover almost all usage:
 
@@ -609,6 +613,19 @@ Three things make this work, and each one is a trap if you skip it:
 
 `AsyncList` itself is not involved — its markup would fight the virtualizer's
 absolute positioning. This is exactly why the engine is available separately.
+
+`useMergedRef` is exported for step 2, so the two-owners-one-node dance is not
+yours to hand-roll:
+
+```tsx
+import { useMergedRef } from '@vmariev/react-async-list';
+
+const setScroller = useMergedRef<HTMLDivElement>(scrollerRef, ref);
+```
+
+A working version lives in `example/demos/Virtualized.tsx` — 5000 rows paged in,
+roughly fifteen of them in the DOM at any moment. Run `npm run dev` locally, or
+[open the sandbox](https://codesandbox.io/p/sandbox/zealous-blackwell-573gfd).
 
 ## Imperative access
 
