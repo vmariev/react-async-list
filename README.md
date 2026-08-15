@@ -807,16 +807,65 @@ has already caught two real staleness bugs here.
 
 ### Releasing
 
-Changelog entries come from [changesets](https://github.com/changesets/changesets),
-so they are written in the same pull request as the change:
+Publishing is done by CI, never from a laptop: the workflow signs the package
+with provenance, which local `npm publish` cannot do, and it avoids two people
+racing to publish the same version. There is deliberately no `release` script.
+
+**1 — describe the change, in the same pull request that makes it.** Changesets
+turns these files into the changelog, so the description is written while the
+change is fresh:
 
 ```bash
-npm run changeset    # describe the change; commit the generated file
-npm run version      # bump package.json, fold the files into CHANGELOG.md
+npm run changeset
 ```
 
-Publishing happens on a GitHub release: the workflow builds and pushes to npm
-with provenance. It needs an `NPM_TOKEN` repository secret.
+Pick the bump (`patch` for fixes and docs, `minor` for new API, `major` for
+breaking changes), write a sentence, and commit the generated
+`.changeset/*.md` file alongside your code.
+
+**2 — cut the version.** This consumes every pending changeset file, bumps
+`package.json` and `package-lock.json`, and folds the descriptions into
+`CHANGELOG.md`:
+
+```bash
+npm run version
+```
+
+```bash
+git add -A && git commit -m "release: $(node -p "require('./package.json').version")"
+```
+
+**3 — push, then tag.** The tag is derived from `package.json` so it cannot drift
+from the version being published:
+
+```bash
+git push origin main
+```
+
+```bash
+git tag -a "v$(node -p "require('./package.json').version")" -m "v$(node -p "require('./package.json').version")"
+```
+
+```bash
+git push origin --tags
+```
+
+**4 — create the GitHub release** on that tag. This is what triggers publishing:
+the workflow runs `typecheck`, `build`, and `npm publish --provenance`. It needs
+an `NPM_TOKEN` repository secret — a granular token with **write access to the
+`@vmariev` scope**, or a classic Automation token. A token limited to selected
+packages cannot create a new one.
+
+**5 — verify.** The npmjs.com page is cached and lags by minutes to hours; the
+registry is authoritative:
+
+```bash
+npm view @vmariev/react-async-list version
+```
+
+A published version is immutable — npm will not let you overwrite it, and
+unpublishing burns the number for good. If something is wrong, release the next
+patch.
 
 ### Tests
 

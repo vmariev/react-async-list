@@ -42,8 +42,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "changeset": "changeset",
-    "version": "changeset version && node scripts/sync-lock-version.mjs",
-    "release": "npm run build && changeset publish"
+    "version": "changeset version && node scripts/sync-lock-version.mjs"
   },
   "keywords": [
     "react",
