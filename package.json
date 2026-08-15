@@ -1,7 +1,7 @@
 {
   "name": "@vmariev/react-async-list",
   "version": "1.0.0",
-  "description": "Zero-dependency bidirectional infinite-scroll list for React, with reverse (chat) mode and an optional custom scrollbar.",
+  "description": "Zero-dependency bidirectional infinite scroll for React — reverse (chat) mode, and a headless hook that pairs with any virtualizer.",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -48,14 +48,22 @@
   "keywords": [
     "react",
     "infinite-scroll",
+    "infinite-list",
     "lazy-load",
     "lazy-loading",
+    "pagination",
+    "virtualization",
+    "virtualized",
+    "virtual-list",
+    "react-virtual",
+    "headless",
+    "hook",
     "list",
     "chat",
     "reverse",
     "bidirectional",
     "scrollbar",
-    "pagination"
+    "scroll"
   ],
   "repository": {
     "type": "git",

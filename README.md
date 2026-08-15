@@ -9,7 +9,7 @@ Point it at an async function, give it a bounded height, and it handles the rest
 - **Won't flood your API.** A fetch that comes back empty stops that direction until something changes. [Details](#the-flood-guard).
 - **Reverse mode** for chat transcripts — pinned to the bottom, new items don't move the view.
 - **No setup.** Styles are injected at runtime; there's no CSS import to remember.
-- **Headless option.** `useAsyncList` gives you the engine without the markup, for tables, grids, or a virtualizer.
+- **Works with a virtualizer.** `useAsyncList` gives you the loading engine without any markup, so it drives a `<table>`, a grid, or [`@tanstack/react-virtual`](https://tanstack.com/virtual) / `react-window` / `react-virtuoso` — none of which this package depends on. [Show me](#with-a-virtualizer).
 - **Optional custom scrollbar** that looks the same on every platform.
 - ESM + CJS + TypeScript declarations. React 18 and 19.
 
@@ -521,8 +521,13 @@ Returns:
 
 This library deliberately renders every child, so very long lists want a
 virtualizer. Rather than building one in, pair the hook with a real one — it owns
-the windowing, `useAsyncList` owns the paging. Here with
-[`@tanstack/react-virtual`](https://tanstack.com/virtual):
+the windowing, `useAsyncList` owns the paging.
+
+**No virtualizer is bundled or required.** The example below uses
+[`@tanstack/react-virtual`](https://tanstack.com/virtual), which appears in this
+repository only as a `devDependency` for the demo; installing this package pulls
+in nothing but `react`. The same shape works with `react-window`,
+`react-virtuoso`, or one you wrote yourself.
 
 ```tsx
 import { useCallback, useRef, useState } from 'react';
