@@ -1,0 +1,39 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["DOM", "DOM.Iterable", "ES2020"],
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "moduleDetection": "force",
+    // The demo in example/ imports the package by name. Map it to the source so
+    // typechecking never depends on dist/ existing, and so it does not fall
+    // through to resolving the package against its own `exports` map.
+    //
+    // Intentionally no `baseUrl`: it is deprecated for removal in TypeScript 7,
+    // and since 4.1 `paths` resolves relative to this file's directory anyway.
+    "paths": {
+      "@kinavi/react-async-list": ["./src/index.ts"]
+    },
+    // Declarations are emitted by tsup, not tsc.
+    "noEmit": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": [
+    "src",
+    "example",
+    "test",
+    "tsup.config.ts",
+    "vite.config.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": ["node_modules", "dist"]
+}

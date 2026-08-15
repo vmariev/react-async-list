@@ -1,0 +1,272 @@
+/*
+ * @kinavi/react-async-list — stylesheet.
+ *
+ * Authored as plain CSS with BEM class names. `scripts/build-css.mjs` inlines
+ * this file into src/styles/generated.ts (for runtime injection) and copies it
+ * to dist/styles.css (for consumers who prefer a static import).
+ *
+ * Conventions:
+ * - Every selector is a single class, so consumer CSS overrides it without
+ *   specificity games. The one doubled selector is commented where it appears.
+ * - Themeable values read `var(--react-async-list-*, fallback)`. The variables
+ *   are deliberately not declared in a defaults block, so setting one on any
+ *   ancestor — `:root`, a wrapper, the list itself — takes effect.
+ */
+
+/* ---------------------------------------------------------------- scroller */
+
+.react-async-list {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/*
+ * Bottom-anchored mode. `column-reverse` is what pins the list to its bottom
+ * edge and makes appended items appear without moving the view; browsers then
+ * report scrollTop as a negative number, which the scroll maths accounts for.
+ * `overflow-anchor: none` stops scroll anchoring from fighting that.
+ */
+.react-async-list_reverse {
+  flex-direction: column-reverse;
+  overflow-anchor: none;
+  overscroll-behavior-y: contain;
+}
+
+.react-async-list_hide-native-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.react-async-list_hide-native-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+/* ----------------------------------------------------------------- content */
+
+.react-async-list__content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+}
+
+/*
+ * Doubled class on purpose. The default loader carries its own single-class
+ * rule (`.react-async-list-loader` sets `position: relative`), so a
+ * single-class selector here would come down to source order. Overlaying rather
+ * than shifting layout matters: a loader that changed the content height would
+ * move the scroll position and retrigger the very fetch it is reporting.
+ */
+.react-async-list__loader.react-async-list__loader_up,
+.react-async-list__loader.react-async-list__loader_down {
+  position: absolute;
+  left: 50%;
+  z-index: 1;
+  padding: var(--react-async-list-loader-inset, 5px);
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.react-async-list__loader_up {
+  top: 0;
+}
+
+.react-async-list__loader_down {
+  bottom: 0;
+}
+
+/* --------------------------------------------------------------- scrollbar */
+
+.react-async-list-scrollbar {
+  position: relative;
+  display: flex;
+  flex-grow: 1;
+  min-height: 0;
+}
+
+.react-async-list-scrollbar__viewport {
+  min-height: 0;
+}
+
+.react-async-list-scrollbar__bar {
+  position: absolute;
+  top: 0;
+  right: var(--react-async-list-scrollbar-inset, 6px);
+  z-index: 100;
+  width: var(--react-async-list-scrollbar-width, 6px);
+  height: 100%;
+}
+
+.react-async-list-scrollbar__track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--react-async-list-track-color, none);
+}
+
+/* Height and top/bottom are written inline — they change on every scroll frame. */
+.react-async-list-scrollbar__thumb {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  margin: 2px 0;
+  border-radius: var(--react-async-list-thumb-radius, 100px);
+  background: var(--react-async-list-thumb-color, hsl(218deg 54% 20% / 15%));
+  cursor: grab;
+  transition: background 120ms ease;
+}
+
+.react-async-list-scrollbar__thumb:hover {
+  background: var(
+    --react-async-list-thumb-color-hover,
+    hsl(218deg 54% 20% / 28%)
+  );
+}
+
+/* ------------------------------------------------------------ default loader */
+
+@keyframes react-async-list-loader-fade {
+  0%,
+  39%,
+  100% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+.react-async-list-loader {
+  position: relative;
+  width: var(--react-async-list-loader-size, 20px);
+  height: var(--react-async-list-loader-size, 20px);
+  margin: 0 auto;
+}
+
+.react-async-list-loader__item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.react-async-list-loader__item::before {
+  content: '';
+  display: block;
+  width: 10%;
+  height: 25%;
+  margin: 0 auto;
+  border-radius: 35%;
+  background-color: var(--react-async-list-loader-color, currentColor);
+  animation: react-async-list-loader-fade
+    var(--react-async-list-loader-duration, 1.2s) infinite ease-in-out both;
+}
+
+.react-async-list-loader__item_2 {
+  transform: rotate(30deg);
+}
+
+.react-async-list-loader__item_2::before {
+  animation-delay: -1.1s;
+}
+
+.react-async-list-loader__item_3 {
+  transform: rotate(60deg);
+}
+
+.react-async-list-loader__item_3::before {
+  animation-delay: -1s;
+}
+
+.react-async-list-loader__item_4 {
+  transform: rotate(90deg);
+}
+
+.react-async-list-loader__item_4::before {
+  animation-delay: -0.9s;
+}
+
+.react-async-list-loader__item_5 {
+  transform: rotate(120deg);
+}
+
+.react-async-list-loader__item_5::before {
+  animation-delay: -0.8s;
+}
+
+.react-async-list-loader__item_6 {
+  transform: rotate(150deg);
+}
+
+.react-async-list-loader__item_6::before {
+  animation-delay: -0.7s;
+}
+
+.react-async-list-loader__item_7 {
+  transform: rotate(180deg);
+}
+
+.react-async-list-loader__item_7::before {
+  animation-delay: -0.6s;
+}
+
+.react-async-list-loader__item_8 {
+  transform: rotate(210deg);
+}
+
+.react-async-list-loader__item_8::before {
+  animation-delay: -0.5s;
+}
+
+.react-async-list-loader__item_9 {
+  transform: rotate(240deg);
+}
+
+.react-async-list-loader__item_9::before {
+  animation-delay: -0.4s;
+}
+
+.react-async-list-loader__item_10 {
+  transform: rotate(270deg);
+}
+
+.react-async-list-loader__item_10::before {
+  animation-delay: -0.3s;
+}
+
+.react-async-list-loader__item_11 {
+  transform: rotate(300deg);
+}
+
+.react-async-list-loader__item_11::before {
+  animation-delay: -0.2s;
+}
+
+.react-async-list-loader__item_12 {
+  transform: rotate(330deg);
+}
+
+.react-async-list-loader__item_12::before {
+  animation-delay: -0.1s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .react-async-list-loader__item::before {
+    animation-duration: 2.4s;
+  }
+
+  .react-async-list-scrollbar__thumb {
+    transition: none;
+  }
+}

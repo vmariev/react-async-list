@@ -1,36 +1,29 @@
-import React from 'react';
-import {
-  LoaderCircle,
-  LoaderItem4,
-  LoaderItem6,
-  LoaderItem7,
-  LoaderItem8,
-  LoaderItem5,
-  LoaderItem9,
-  LoaderItem11,
-  LoaderItem10,
-  LoaderItem2,
-  LoaderItem12,
-  LoaderItem3,
-  LoaderContainer,
-} from './styled';
+import { memo } from 'react';
 
-type LoaderPropsType = {
+import { cx } from '../utils/cx';
+
+export type LoaderProps = {
   className?: string;
 };
-export const Loader = ({ className }: LoaderPropsType) => (
-  <LoaderContainer className={className}>
-    <LoaderCircle />
-    <LoaderItem2 />
-    <LoaderItem3 />
-    <LoaderItem4 />
-    <LoaderItem5 />
-    <LoaderItem6 />
-    <LoaderItem7 />
-    <LoaderItem8 />
-    <LoaderItem9 />
-    <LoaderItem10 />
-    <LoaderItem11 />
-    <LoaderItem12 />
-  </LoaderContainer>
-);
+
+const ITEMS = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const;
+
+/**
+ * Default spinner: twelve fading spokes, drawn with CSS only.
+ *
+ * Inherits `currentColor`, so set `color` on an ancestor to recolour it. Pass
+ * `CustomLoader` to `AsyncList` to replace it entirely.
+ */
+export const Loader = memo(({ className }: LoaderProps) => (
+  <div className={cx('react-async-list-loader', className)} aria-hidden="true">
+    <div className="react-async-list-loader__item" />
+    {ITEMS.map((index) => (
+      <div
+        key={index}
+        className={`react-async-list-loader__item react-async-list-loader__item_${index}`}
+      />
+    ))}
+  </div>
+));
+
+Loader.displayName = 'Loader';

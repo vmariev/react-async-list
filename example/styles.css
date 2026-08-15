@@ -1,0 +1,246 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --fg: #16202c;
+  --muted: #5d6b7a;
+  --border: #dde3ea;
+  --panel: #f6f8fa;
+  --accent: #2f6feb;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #10151b;
+    --fg: #e6edf3;
+    --muted: #8b98a5;
+    --border: #263039;
+    --panel: #171d24;
+    --accent: #6ea8ff;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 32px 24px 64px;
+  background: var(--bg);
+  color: var(--fg);
+  font:
+    14px/1.5 -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+}
+
+h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
+}
+
+h2 {
+  margin: 0 0 2px;
+  font-size: 15px;
+}
+
+.subtitle,
+.demo__note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.layout {
+  display: grid;
+  gap: 28px;
+  max-width: 1180px;
+  margin: 0 auto;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+}
+
+.layout > header {
+  grid-column: 1 / -1;
+}
+
+.demo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+.demo__header {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.demo__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+button {
+  padding: 5px 11px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--fg);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--accent);
+}
+
+.status {
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The library never sets a height — bounding it is the consumer's job. */
+.demo__list {
+  height: 260px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.row {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+}
+
+.row:last-child {
+  border-bottom: none;
+}
+
+.row_end {
+  color: var(--muted);
+  text-align: center;
+  font-size: 12px;
+}
+
+.bubble {
+  align-self: flex-start;
+  max-width: 78%;
+  margin: 5px 12px;
+  padding: 7px 11px;
+  border-radius: 12px 12px 12px 3px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+}
+
+.bubble_own {
+  align-self: flex-end;
+  border-radius: 12px 12px 3px 12px;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.bubble__meta {
+  margin-bottom: 2px;
+  font-size: 11px;
+  opacity: 0.7;
+}
+
+.table-demo {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-demo th,
+.table-demo td {
+  padding: 7px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-variant-numeric: tabular-nums;
+}
+
+.table-demo thead th {
+  position: sticky;
+  top: 0;
+  background: var(--panel);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.scroll-modes {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.scroll-modes .demo__list {
+  height: 190px;
+}
+
+.scroll-modes__label {
+  margin-bottom: 5px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/*
+ * Two ways to restyle the list.
+ *
+ * 1. CSS custom properties — set them on any ancestor, no selector needed.
+ *    This is the preferred route for colours and sizes.
+ */
+.themed {
+  --react-async-list-thumb-color: color-mix(
+    in srgb,
+    var(--accent) 45%,
+    transparent
+  );
+  --react-async-list-thumb-color-hover: var(--accent);
+  --react-async-list-scrollbar-width: 8px;
+  --react-async-list-thumb-radius: 4px;
+  --react-async-list-loader-color: var(--accent);
+}
+
+/* 2. A slot class, for anything the variables do not cover. */
+.themed-track {
+  background: color-mix(in srgb, var(--border) 55%, transparent);
+  border-radius: 4px;
+}
+
+.pulse-loader {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: pulse-loader-spin 0.7s linear infinite;
+}
+
+@keyframes pulse-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.error-banner {
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #fde8e8;
+  color: #9b1c1c;
+  font-size: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  .error-banner {
+    background: #3b1717;
+    color: #fca5a5;
+  }
+}
