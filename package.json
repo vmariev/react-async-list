@@ -1,6 +1,6 @@
 {
-  "name": "@kinavi/react-async-list",
-  "version": "2.0.0",
+  "name": "@vmariev/react-async-list",
+  "version": "1.0.0",
   "description": "Zero-dependency bidirectional infinite-scroll list for React, with reverse (chat) mode and an optional custom scrollbar.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -59,14 +59,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kinavi/react-async-list.git"
+    "url": "git+https://github.com/vmariev/react-async-list.git"
   },
-  "author": "kinavi",
+  "author": "vmariev",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kinavi/react-async-list/issues"
+    "url": "https://github.com/vmariev/react-async-list/issues"
   },
-  "homepage": "https://github.com/kinavi/react-async-list#readme",
+  "homepage": "https://github.com/vmariev/react-async-list#readme",
   "peerDependencies": {
     "react": ">=18 <20"
   },

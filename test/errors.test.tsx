@@ -32,7 +32,7 @@ describe('error handling', () => {
     expect(onError.mock.calls[0]?.[0]).toBeInstanceOf(Error);
   });
 
-  // v1 used .then() with no .catch(), so the loading flag stayed true forever
+  // The original used .then() with no .catch(), so the loading flag stayed true
   // and the direction was dead for the rest of the session.
   it('clears the loading state so the direction is not wedged', async () => {
     const { scroller } = await renderList({

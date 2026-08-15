@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 export type CustomScrollbarSlots = {
   /** The absolutely positioned bar holding the track and thumb. */
@@ -24,6 +24,8 @@ export type CustomScrollbarProps = {
   children: (params: CustomScrollbarRenderProps) => ReactNode;
   /** Applied to the outer wrapper. */
   className?: string;
+  /** Applied to the outer wrapper, alongside `className`. */
+  style?: CSSProperties;
   classNames?: CustomScrollbarSlots;
   /** Bottom-anchored (chat) mode, where `scrollTop` runs from `-max` to `0`. */
   isReverse?: boolean;

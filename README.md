@@ -1,4 +1,4 @@
-# @kinavi/react-async-list
+# @vmariev/react-async-list
 
 A scroll container for React that loads more items as either edge comes into view.
 
@@ -35,7 +35,7 @@ Point it at an async function, give it a bounded height, and it handles the rest
 - [Imperative access](#imperative-access)
 - [Server-side rendering](#server-side-rendering)
 - [API reference](#api-reference)
-- [Migrating from v1](#migrating-from-v1)
+- [Coming from the original component](#coming-from-the-original-component)
 - [Troubleshooting](#troubleshooting)
 - [Development](#development)
 - [License](#license)
@@ -45,11 +45,11 @@ Point it at an async function, give it a bounded height, and it handles the rest
 ## Install
 
 ```bash
-npm install @kinavi/react-async-list
+npm install @vmariev/react-async-list
 ```
 
 ```bash
-yarn add @kinavi/react-async-list
+yarn add @vmariev/react-async-list
 ```
 
 `react` is a peer dependency (`>=18 <20`). Nothing else is required — no CSS import, no style library, no polyfills.
@@ -58,7 +58,7 @@ yarn add @kinavi/react-async-list
 
 ```tsx
 import { useCallback, useState } from 'react';
-import { AsyncList } from '@kinavi/react-async-list';
+import { AsyncList } from '@vmariev/react-async-list';
 
 export const UserList = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -193,7 +193,7 @@ What this means for you:
 import {
   getTopScrollOffset,
   setTopScrollOffset,
-} from '@kinavi/react-async-list';
+} from '@vmariev/react-async-list';
 
 // Engine-agnostic, orientation-agnostic.
 const fromTop = getTopScrollOffset(element, isReverse);
@@ -234,7 +234,7 @@ parked at the edge → fetch → returns nothing (normal, you're at the end)
                    → still at the edge → fetch → …forever, ~3 requests/second
 ```
 
-This library tracks a _content signature_ per direction — the container's scroll height, its client height, and its child counts. An attempt is skipped when the signature matches the last attempt in the same direction, because the same question can't get a different answer. Re-attempting becomes possible again as soon as:
+This library tracks a _content signature_ per direction — the container's scroll height, its client height, how many items are rendered, and your `contentKey` if you supply one. An attempt is skipped when the signature matches the last attempt in the same direction, because the same question can't get a different answer. Re-attempting becomes possible again as soon as:
 
 - the content or the viewport changes size, or items are added or removed;
 - you flip an `isDisableFetch*` flag;
@@ -242,6 +242,8 @@ This library tracks a _content signature_ per direction — the container's scro
 - you call `check({ force: true })` from `useAsyncList`.
 
 The item count is part of the signature on purpose. Until a list overflows, `scrollHeight` equals `clientHeight` no matter how many rows you add, so heights alone would report "nothing changed" and stall a list that is still filling up.
+
+`AsyncList` counts your `children` for this, unwrapping fragments on the way — `Children.count` does not look inside one, so `<AsyncList><>{rows.map(…)}</></AsyncList>` would otherwise report a permanent count of `1` and stall the list on its first page.
 
 ### When the signature cannot see the change
 
@@ -337,7 +339,10 @@ To stop retrying after a failure, set `isDisableFetchDown` in your handler and o
 `CustomLoader` replaces the built-in spinner. It receives the `className` to apply — which carries the positioning that keeps the loader from shifting layout — plus the edge it's rendered at.
 
 ```tsx
-import { AsyncList, type AsyncListLoaderProps } from '@kinavi/react-async-list';
+import {
+  AsyncList,
+  type AsyncListLoaderProps,
+} from '@vmariev/react-async-list';
 
 const MyLoader = ({ className, direction }: AsyncListLoaderProps) => (
   <div className={className}>
@@ -443,7 +448,7 @@ react-async-list-loader__item[_2 … _12]          its twelve spokes
 To control ordering explicitly, or under a `style-src` CSP that forbids inline styles:
 
 ```tsx
-import '@kinavi/react-async-list/styles.css';
+import '@vmariev/react-async-list/styles.css';
 
 <AsyncList injectStyles={false} … />
 ```
@@ -453,7 +458,7 @@ import '@kinavi/react-async-list/styles.css';
 The whole loading engine, without any markup. Use it when the DOM structure has to be yours — a `<table>`, a CSS grid, a virtualized viewport.
 
 ```tsx
-import { useAsyncList } from '@kinavi/react-async-list';
+import { useAsyncList } from '@vmariev/react-async-list';
 
 const RecordTable = () => {
   const [rows, setRows] = useState<Row[]>([]);
@@ -522,7 +527,7 @@ the windowing, `useAsyncList` owns the paging. Here with
 ```tsx
 import { useCallback, useRef, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useAsyncList } from '@kinavi/react-async-list';
+import { useAsyncList } from '@vmariev/react-async-list';
 
 const ROW_HEIGHT = 40;
 
@@ -686,13 +691,16 @@ Nothing loads until the component mounts in a browser, so render the first page 
 | `ASYNC_LIST_CSS`, `STYLE_ELEMENT_ID`, `useInjectedStyles`                                                                             | The stylesheet, for custom injection.                                                                                          |
 | `DEFAULT_TRIGGER_OFFSET`, `DEFAULT_LOAD_COOLDOWN_MS`, `DEFAULT_SETTLE_DELAY_MS`                                                       | The defaults, as constants.                                                                                                    |
 
-Types: `AsyncListProps`, `AsyncListSlots`, `AsyncListLoaderProps`, `AsyncListScrollState`, `AsyncListScrollbarMode`, `ScrollDirection`, `UseAsyncListOptions`, `UseAsyncListResult`, `CustomScrollbarProps`, `CustomScrollbarRenderProps`, `CustomScrollbarSlots`, `LoaderProps`.
+Types: `AsyncListProps`, `AsyncListSlots`, `AsyncListLoaderProps`, `AsyncListScrollState`, `AsyncListScrollbarMode`, `ScrollDirection`, `ScrollRegime`, `UseAsyncListOptions`, `UseAsyncListResult`, `CustomScrollbarProps`, `CustomScrollbarRenderProps`, `CustomScrollbarSlots`, `LoaderProps`.
 
-## Migrating from v1
+## Coming from the original component
 
-v2 is a rewrite. The old props still work but are deprecated, so existing code compiles while your editor flags what to change.
+This package started life as a component inside a private codebase, and was
+reworked on the way out. Its prop names are still accepted, marked
+`@deprecated`, so code written against the original keeps compiling while your
+editor points at the replacement.
 
-| v1                                    | v2                                                                               |
+| Original                              | Here                                                                             |
 | ------------------------------------- | -------------------------------------------------------------------------------- |
 | `triggerTopPosition`                  | `triggerOffset`                                                                  |
 | `deathZone`, `scrollZoneExitPosition` | `exitOffset`                                                                     |
@@ -703,16 +711,30 @@ v2 is a rewrite. The old props still work but are deprecated, so existing code c
 | `onScroll(isScrolling: boolean)`      | `onScroll({ top, bottom, height })` — distances from the visual edges, see below |
 | `autoHidden`                          | removed — it was never read                                                      |
 
-Also worth knowing:
+Behaviour that changed, not just names:
 
-- **`styled-components` is gone.** v1 required it as an undeclared dependency; v2 has no style dependency at all. You can drop it if it was only there for this package.
-- **`ref` now points at the scrolling element**, not an outer wrapper, so `ref.current.scrollTop` does what you'd expect.
-- **`scrollbar` defaults to `custom`.** Pass `scrollbar="native"` for the v1-like browser scrollbar.
-- **Loaders only render while loading.** v1 showed them whenever a fetcher was present.
-- **Rejections no longer wedge a direction.** v1's `.then()` without a `.catch()` left the loading flag stuck on forever.
-- **Repeated requests at an edge are fixed.** In v1 — and in the upstream component this was extracted from — a list parked at an edge with a live fetcher issued roughly three requests per second indefinitely. See [the flood guard](#the-flood-guard). If you were holding a scroll offset at `1` to work around this, you no longer need to.
-- **`onScroll` distances no longer flip meaning in reverse mode.** They were previously derived from the raw `scrollTop`, so in a reversed list `top` actually measured the distance from the _bottom_. Both values are now distances from the corresponding visual edge in every orientation. If you were reading `top` in a chat to detect "at the newest message", read `bottom` instead.
-- **Reverse mode no longer assumes a negative `scrollTop`.** The convention is measured per container rather than hard-coded. See [the negative `scrollTop` problem](#the-negative-scrolltop-problem).
+- **`styled-components` is gone.** The original required it; this has no style
+  dependency at all. You can drop it if it was only there for this component.
+- **`ref` points at the scrolling element**, not an outer wrapper, so
+  `ref.current.scrollTop` does what you'd expect.
+- **`scrollbar` defaults to `custom`.** Pass `scrollbar="native"` for the
+  browser's own bar, which is what the original effectively gave you.
+- **Loaders only render while loading.** The original showed them whenever a
+  fetcher was present.
+- **Rejections no longer wedge a direction.** A `.then()` without a `.catch()`
+  used to leave the loading flag stuck on forever.
+- **Repeated requests at an edge are fixed.** A list parked at an edge with a
+  live fetcher used to issue roughly three requests per second indefinitely. See
+  [the flood guard](#the-flood-guard). If you were holding a scroll offset at `1`
+  to work around this, you no longer need to.
+- **`onScroll` distances no longer flip meaning in reverse mode.** They were
+  derived from the raw `scrollTop`, so in a reversed list `top` actually measured
+  the distance from the _bottom_. Both values are now distances from the
+  corresponding visual edge in every orientation. If you were reading `top` in a
+  chat to detect "at the newest message", read `bottom` instead.
+- **Reverse mode no longer assumes a negative `scrollTop`.** The convention is
+  measured per container rather than hard-coded. See
+  [the negative `scrollTop` problem](#the-negative-scrolltop-problem).
 
 ## Troubleshooting
 
@@ -745,7 +767,7 @@ npm run typecheck
 npm run build        # dist/: ESM, CJS, .d.ts, styles.css
 ```
 
-CI runs `lint`, `format:check`, `typecheck`, `test`, `build`, and `npm pack --dry-run`
+CI runs `lint`, `format:check`, `typecheck`, `test`, `build`, a drift check on the generated stylesheet, and `npm pack --dry-run`
 on Node 20 and 22.
 
 Two notes on the lint setup. Only `rules-of-hooks` and `exhaustive-deps` are
@@ -775,14 +797,20 @@ jsdom performs no layout, so `test/layout.ts` models the parts that matter — `
 
 The suites worth reading before changing `useAsyncList`, because each one pins down a bug that actually shipped:
 
-| Suite                   | Guarantee                                                                                                                                                                                      |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `floodGuard.test.tsx`   | A list parked at an edge issues **one** request, not one every 300ms — including in reverse mode at `scrollTop: 0`, with any `exitOffset`, with inline fetchers, and under constant re-renders |
-| `loading.test.tsx`      | An under-filled list keeps filling until it overflows; directions load independently; reverse-mode offsets                                                                                     |
-| `errors.test.tsx`       | A rejection doesn't wedge a direction, doesn't spin while idle, and recovers                                                                                                                   |
-| `scrollRegime.test.tsx` | The probe, and every reverse-mode behaviour run against **both** `scrollTop` conventions — the cross-engine safety net                                                                         |
-| `rendering.test.tsx`    | Class names, slots, `as`, ref forwarding, deprecated aliases, style injection                                                                                                                  |
-| `useAsyncList.test.tsx` | The headless hook driving a `<table>`, and the reverse-mode sign flip in `scrollToTop`/`scrollToBottom`                                                                                        |
+| Suite                          | Guarantee                                                                                                                                                                                      |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `floodGuard.test.tsx`          | A list parked at an edge issues **one** request, not one every 300ms — including in reverse mode at `scrollTop: 0`, with any `exitOffset`, with inline fetchers, and under constant re-renders |
+| `loading.test.tsx`             | An under-filled list keeps filling until it overflows; directions load independently, including reaching the far edge mid-fetch                                                                |
+| `errors.test.tsx`              | A rejection doesn't wedge a direction, doesn't spin while idle, and recovers                                                                                                                   |
+| `scrollRegime.test.tsx`        | The probe, and every reverse-mode behaviour run against **both** `scrollTop` conventions — the cross-engine safety net                                                                         |
+| `rendering.test.tsx`           | Class names, slots, `as`, ref forwarding, deprecated aliases, style injection                                                                                                                  |
+| `useAsyncList.test.tsx`        | The headless hook driving a `<table>`, and the reverse-mode sign flip in `scrollToTop`/`scrollToBottom`                                                                                        |
+| `contentKey.test.tsx`          | A replacing fetch stays visible to the guard; the dev warning for a missing `itemCount`                                                                                                        |
+| `layoutReads.test.tsx`         | An exhausted list stops reading layout altogether — counted, not assumed                                                                                                                       |
+| `mergedRef.test.tsx`           | The merged ref is stable, so an inline `ref` cannot churn the subscription                                                                                                                     |
+| `virtualized.test.tsx`         | Paging a virtualized container, and the stall that happens without `itemCount`                                                                                                                 |
+| `reviewFixes.test.tsx`         | A drag that outlives the component, `className`/`style` landing together, and items wrapped in a fragment                                                                                      |
+| `scroll.test.ts`, `cx.test.ts` | The pure offset maths and the class-name helper                                                                                                                                                |
 
 Note that tests advance fake timers in slices rather than one jump: React commits renders when an `act` scope exits, so a single large jump would run many timers against stale DOM and make "nothing happened" assertions vacuous.
 
@@ -792,4 +820,4 @@ Styles are authored as plain CSS with BEM class names in [`src/styles/async-list
 
 ## License
 
-MIT © [kinavi](https://github.com/kinavi)
+MIT © [vmariev](https://github.com/vmariev)

@@ -1,7 +1,7 @@
 import {
   AsyncList,
   type AsyncListScrollbarMode,
-} from '@kinavi/react-async-list';
+} from '@vmariev/react-async-list';
 
 import { makeRows } from '../fakeApi';
 

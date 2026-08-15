@@ -9,7 +9,7 @@ export default defineConfig({
   plugins: [react()],
   resolve: {
     alias: {
-      '@kinavi/react-async-list': fileURLToPath(
+      '@vmariev/react-async-list': fileURLToPath(
         new URL('./src/index.ts', import.meta.url)
       ),
     },

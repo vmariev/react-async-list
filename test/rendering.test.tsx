@@ -181,7 +181,7 @@ describe('deprecated prop aliases', () => {
       emptyPages: true,
     });
 
-    await scrollToEdge(viaDeathZone.scroller, 'bottom', true);
+    await scrollToEdge(viaDeathZone.scroller, 'bottom');
     await advance(500);
 
     expect(viaDeathZone.layout.scrollTop).toBe(-1);
@@ -196,7 +196,7 @@ describe('deprecated prop aliases', () => {
       emptyPages: true,
     });
 
-    await scrollToEdge(scroller, 'bottom', true);
+    await scrollToEdge(scroller, 'bottom');
     await advance(500);
 
     expect(layout.scrollTop).toBe(-5);

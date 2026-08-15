@@ -1,4 +1,11 @@
-import { Children, forwardRef, memo } from 'react';
+import {
+  Children,
+  Fragment,
+  forwardRef,
+  isValidElement,
+  memo,
+  type ReactNode,
+} from 'react';
 
 import { CustomScrollbar } from '../CustomScrollbar';
 import { Loader } from '../Loader';
@@ -7,6 +14,34 @@ import { useInjectedStyles } from '../hooks/useInjectedStyles';
 import { useMergedRef } from '../hooks/useMergedRef';
 import { cx } from '../utils/cx';
 import type { AsyncListProps } from './types';
+
+/**
+ * How many items the caller rendered.
+ *
+ * `Children.count` alone is not enough: it does not look inside a fragment, so
+ * `<AsyncList><>{rows.map(…)}</></AsyncList>` — a perfectly ordinary thing to
+ * write — would report `1` forever. The flood guard would then never see the
+ * list grow and would stall it on its first page, silently, because a count
+ * *was* supplied. Unwrap fragments so the number means what it says.
+ *
+ * Costs an allocation only in the single-child case, which is exactly the case
+ * that might be a fragment.
+ */
+const countItems = (children: ReactNode): number => {
+  const count = Children.count(children);
+
+  if (count !== 1) {
+    return count;
+  }
+
+  const [only] = Children.toArray(children);
+
+  if (isValidElement(only) && only.type === Fragment) {
+    return countItems((only.props as { children?: ReactNode }).children);
+  }
+
+  return count;
+};
 
 /**
  * A scroll container that loads more items as either edge comes into view.
@@ -24,6 +59,7 @@ export const AsyncList = memo(
     const {
       children,
       className,
+      style,
       classNames: slots,
       fetchUp,
       fetchDown,
@@ -75,7 +111,7 @@ export const AsyncList = memo(
       onError,
       // Counted here rather than from the DOM so the loading indicator, which is
       // also a child of the content element, cannot be mistaken for an item.
-      itemCount: Children.count(children),
+      itemCount: countItems(children),
       contentKey,
     });
 
@@ -125,6 +161,7 @@ export const AsyncList = memo(
           listElement={element}
           isReverse={isReverse}
           className={cx(className, slots?.root)}
+          style={style}
           classNames={{
             bar: slots?.scrollbar,
             track: slots?.track,
@@ -152,6 +189,7 @@ export const AsyncList = memo(
         ref={mergedRef}
         id={resolvedId}
         className={cx(scrollerClassName, className, slots?.root)}
+        style={style}
       >
         {content}
       </Component>

@@ -192,59 +192,8 @@ describe('per-direction independence', () => {
   });
 });
 
-describe('reverse orientation', () => {
-  it('loads history when scrolled to the reversed top edge', async () => {
-    const onFetchUp = vi.fn();
-    const { scroller, rowCount } = await renderList({
-      initialRows: 20,
-      isReverse: true,
-      withFetchUp: true,
-      withFetchDown: false,
-      pageSize: 5,
-      onFetchUp,
-    });
-
-    // scrollTop 0 is the bottom in reverse mode, so nothing should load yet.
-    await advance(ONE_CYCLE);
-    expect(onFetchUp).not.toHaveBeenCalled();
-
-    await scrollToEdge(scroller, 'top', true);
-    await advance(ONE_CYCLE);
-
-    expect(onFetchUp).toHaveBeenCalled();
-    expect(rowCount()).toBeGreaterThan(20);
-  });
-
-  it('does not load history while resting at the newest item', async () => {
-    const onFetchUp = vi.fn();
-    await renderList({
-      initialRows: 20,
-      isReverse: true,
-      withFetchUp: true,
-      withFetchDown: false,
-      onFetchUp,
-    });
-
-    await advanceInSteps(3000);
-
-    expect(onFetchUp).not.toHaveBeenCalled();
-  });
-
-  it('pins the scroll position to the bottom edge with exitOffset', async () => {
-    const { scroller, layout } = await renderList({
-      initialRows: 20,
-      isReverse: true,
-      exitOffset: 1,
-      emptyPages: true,
-    });
-
-    await scrollToEdge(scroller, 'bottom', true);
-    await advance(ONE_CYCLE);
-
-    // Reverse mode writes a negative scrollTop: 1px off the bottom.
-    expect(layout.scrollTop).toBe(-1);
-  });
-});
+// Reverse-mode behaviour lives in scrollRegime.test.tsx, where every scenario
+// runs against both `scrollTop` conventions rather than just Chromium's.
 
 describe('cooldown', () => {
   it('does not fire the same direction twice inside the cooldown window', async () => {

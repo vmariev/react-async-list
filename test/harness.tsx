@@ -5,7 +5,6 @@ import { expect, vi } from 'vitest';
 import { AsyncList } from '../src/AsyncList';
 import type { AsyncListProps } from '../src/AsyncList/types';
 import {
-  DEFAULT_VIEWPORT_HEIGHT,
   getLayout,
   setViewportHeight,
   useRegimeForNextMount,
@@ -13,14 +12,7 @@ import {
   type ScrollRegime,
 } from './layout';
 
-export {
-  DEFAULT_VIEWPORT_HEIGHT,
-  ROW_HEIGHT,
-  ROWS_TO_OVERFLOW,
-  getLayout,
-  setScrollRegime,
-  useRegimeForNextMount,
-} from './layout';
+export { ROW_HEIGHT, ROWS_TO_OVERFLOW } from './layout';
 export type { ScrollRegime } from './layout';
 
 /** Runs pending timers, rAF callbacks and promise continuations. */
@@ -53,7 +45,7 @@ export const scrollTo = async (element: HTMLElement, top: number) => {
 };
 
 /** The largest valid scroll offset, given the modelled geometry. */
-export const maxScrollTopOf = (element: HTMLElement) =>
+const maxScrollTopOf = (element: HTMLElement) =>
   Math.max(0, element.scrollHeight - element.clientHeight);
 
 /**
@@ -63,8 +55,7 @@ export const maxScrollTopOf = (element: HTMLElement) =>
  */
 export const scrollToEdge = async (
   element: HTMLElement,
-  edge: 'top' | 'bottom',
-  _isReverseIgnored = false
+  edge: 'top' | 'bottom'
 ) => {
   const max = maxScrollTopOf(element);
   const offsetFromTop = edge === 'top' ? 0 : max;
@@ -108,7 +99,7 @@ const makeRows = (count: number) =>
   });
 
 /** A list wired to controllable fake fetchers. */
-export const ListHarness = (props: ListHarnessProps) => {
+const ListHarness = (props: ListHarnessProps) => {
   const {
     initialRows = 0,
     pageSize = 5,
@@ -246,5 +237,3 @@ export const renderList = async (
     },
   };
 };
-
-export { DEFAULT_VIEWPORT_HEIGHT as VIEWPORT_HEIGHT };

@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { useAsyncList } from '@kinavi/react-async-list';
+import { useAsyncList } from '@vmariev/react-async-list';
 
 import { delay, makeRows, type Row } from '../fakeApi';
 

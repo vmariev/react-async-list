@@ -1,7 +1,7 @@
 // Generated from src/styles/async-list.css by scripts/build-css.mjs. Do not edit.
 /* eslint-disable */
 export const ASYNC_LIST_CSS = `/*
- * @kinavi/react-async-list — stylesheet.
+ * @vmariev/react-async-list — stylesheet.
  *
  * Authored as plain CSS with BEM class names. \`scripts/build-css.mjs\` inlines
  * this file into src/styles/generated.ts (for runtime injection) and copies it

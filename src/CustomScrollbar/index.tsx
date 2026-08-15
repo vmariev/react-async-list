@@ -35,6 +35,7 @@ export const CustomScrollbar = (props: CustomScrollbarProps) => {
   const {
     children,
     className,
+    style,
     classNames: slots,
     listElement,
     isReverse = false,
@@ -45,6 +46,8 @@ export const CustomScrollbar = (props: CustomScrollbarProps) => {
   const thumbRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<number | null>(null);
   const syncScrollbarRef = useRef<() => void>(() => undefined);
+  /** Set while a thumb drag is in progress; see `startDrag`. */
+  const stopDragRef = useRef<(() => void) | null>(null);
   const styleSnapshotRef = useRef<ScrollbarStyleSnapshot>({
     ...EMPTY_STYLE_SNAPSHOT,
     display: 'none',
@@ -219,6 +222,9 @@ export const CustomScrollbar = (props: CustomScrollbarProps) => {
     };
   }, [listElement, scheduleSyncScrollbar]);
 
+  // Ends any drag still in progress when the component goes away.
+  useEffect(() => () => stopDragRef.current?.(), []);
+
   /** Shared by the mouse and touch drag handlers. */
   const startDrag = useCallback(
     (startY: number, moveEvent: 'mouse' | 'touch') => {
@@ -259,35 +265,55 @@ export const CustomScrollbar = (props: CustomScrollbarProps) => {
         syncScrollbar();
       };
 
+      // A drag owns document-level listeners and two global body styles, so it
+      // needs one exit path that always runs — including when the component
+      // unmounts mid-drag, which otherwise left the whole page stuck with
+      // `cursor: grabbing` and `user-select: none` for the rest of the session.
+      let stop: () => void;
+
       if (moveEvent === 'mouse') {
         const handleMouseMove = (event: MouseEvent) =>
           applyDelta(event.clientY);
-        const handleMouseUp = () => {
+
+        stop = () => {
           document.removeEventListener('mousemove', handleMouseMove);
-          document.removeEventListener('mouseup', handleMouseUp);
+          document.removeEventListener('mouseup', stop);
           resetGrabbingCursor(thumbElement);
+          stopDragRef.current = null;
         };
 
         document.addEventListener('mousemove', handleMouseMove);
-        document.addEventListener('mouseup', handleMouseUp);
-        return;
+        document.addEventListener('mouseup', stop);
+      } else {
+        const handleTouchMove = (event: TouchEvent) => {
+          const touch = event.touches[0];
+
+          if (!touch) {
+            return;
+          }
+
+          // Without this the browser pans the page at the same time as the
+          // thumb moves. Requires the listener to be non-passive.
+          event.preventDefault();
+          applyDelta(touch.clientY);
+        };
+
+        stop = () => {
+          document.removeEventListener('touchmove', handleTouchMove);
+          document.removeEventListener('touchend', stop);
+          document.removeEventListener('touchcancel', stop);
+          resetGrabbingCursor(thumbElement);
+          stopDragRef.current = null;
+        };
+
+        document.addEventListener('touchmove', handleTouchMove, {
+          passive: false,
+        });
+        document.addEventListener('touchend', stop);
+        document.addEventListener('touchcancel', stop);
       }
 
-      const handleTouchMove = (event: TouchEvent) => {
-        const touch = event.touches[0];
-
-        if (touch) {
-          applyDelta(touch.clientY);
-        }
-      };
-      const handleTouchEnd = () => {
-        document.removeEventListener('touchmove', handleTouchMove);
-        document.removeEventListener('touchend', handleTouchEnd);
-        resetGrabbingCursor(thumbElement);
-      };
-
-      document.addEventListener('touchmove', handleTouchMove);
-      document.addEventListener('touchend', handleTouchEnd);
+      stopDragRef.current = stop;
     },
     [getScrollGeometry, isReverse, listElement, syncScrollbar]
   );
@@ -311,7 +337,7 @@ export const CustomScrollbar = (props: CustomScrollbarProps) => {
   );
 
   return (
-    <div className={cx('react-async-list-scrollbar', className)}>
+    <div className={cx('react-async-list-scrollbar', className)} style={style}>
       {children({
         handleScrollContent,
         className: cx(

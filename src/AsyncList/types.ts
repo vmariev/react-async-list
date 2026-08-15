@@ -66,7 +66,7 @@ type OwnProps = Pick<
   classNames?: AsyncListSlots;
   /**
    * Set to `false` to skip runtime style injection and import
-   * `@kinavi/react-async-list/styles.css` yourself.
+   * `@vmariev/react-async-list/styles.css` yourself.
    */
   injectStyles?: boolean;
   /** Element or component to render the scroller as. Defaults to `div`. */

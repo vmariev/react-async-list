@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { useAsyncList, useMergedRef } from '@kinavi/react-async-list';
+import { useAsyncList, useMergedRef } from '@vmariev/react-async-list';
 
 import { delay, makeRows, type Row } from '../fakeApi';
 

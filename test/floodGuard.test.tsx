@@ -73,7 +73,7 @@ describe('flood guard', () => {
 
     // In reverse mode scrollTop 0 *is* the bottom edge, so the bottom offset is
     // zero and the trigger condition is permanently satisfied.
-    await scrollToEdge(scroller, 'bottom', true);
+    await scrollToEdge(scroller, 'bottom');
     await advance(ONE_CYCLE);
 
     expect(onFetchDown).toHaveBeenCalledTimes(1);
@@ -99,7 +99,7 @@ describe('flood guard', () => {
       onFetchDown,
     });
 
-    await scrollToEdge(scroller, 'bottom', true);
+    await scrollToEdge(scroller, 'bottom');
     await advance(ONE_CYCLE);
 
     expect(onFetchDown).toHaveBeenCalledTimes(1);

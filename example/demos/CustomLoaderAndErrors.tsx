@@ -3,7 +3,7 @@ import {
   AsyncList,
   type AsyncListLoaderProps,
   type ScrollDirection,
-} from '@kinavi/react-async-list';
+} from '@vmariev/react-async-list';
 
 import { delay, makeRows, type Row } from '../fakeApi';
 

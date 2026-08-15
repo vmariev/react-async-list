@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { AsyncList } from '@kinavi/react-async-list';
+import { AsyncList } from '@vmariev/react-async-list';
 
 import { delay, makeMessages, type Message } from '../fakeApi';
 

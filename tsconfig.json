@@ -13,7 +13,7 @@
     // Intentionally no `baseUrl`: it is deprecated for removal in TypeScript 7,
     // and since 4.1 `paths` resolves relative to this file's directory anyway.
     "paths": {
-      "@kinavi/react-async-list": ["./src/index.ts"]
+      "@vmariev/react-async-list": ["./src/index.ts"]
     },
     // Declarations are emitted by tsup, not tsc.
     "noEmit": true,

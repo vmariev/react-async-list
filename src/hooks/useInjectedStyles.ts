@@ -14,7 +14,7 @@ import { useIsomorphicLayoutEffect } from './useIsomorphicLayoutEffect';
  * It is deliberately never removed — tearing it down when the last list
  * unmounts would make styles flicker on the next mount.
  *
- * Pass `false` to opt out and import `@kinavi/react-async-list/styles.css`
+ * Pass `false` to opt out and import `@vmariev/react-async-list/styles.css`
  * yourself, e.g. to control ordering explicitly or to satisfy a strict CSP.
  */
 export const useInjectedStyles = (enabled = true): void => {

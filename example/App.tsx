@@ -1,6 +1,5 @@
 import { Bidirectional } from './demos/Bidirectional';
 import { CustomLoaderAndErrors } from './demos/CustomLoaderAndErrors';
-import { FloodProbe } from './demos/FloodProbe';
 import { HeadlessTable } from './demos/HeadlessTable';
 import { InfiniteDown } from './demos/InfiniteDown';
 import { ReverseChat } from './demos/ReverseChat';
@@ -10,7 +9,7 @@ import { Virtualized } from './demos/Virtualized';
 export const App = () => (
   <main className="layout">
     <header>
-      <h1>@kinavi/react-async-list</h1>
+      <h1>@vmariev/react-async-list</h1>
       <p className="subtitle">
         Bidirectional infinite scroll for React — zero runtime dependencies.
       </p>
@@ -22,6 +21,5 @@ export const App = () => (
     <HeadlessTable />
     <Virtualized />
     <ScrollbarModes />
-    <FloodProbe />
   </main>
 );
