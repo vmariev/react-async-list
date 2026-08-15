@@ -767,8 +767,13 @@ npm run typecheck
 npm run build        # dist/: ESM, CJS, .d.ts, styles.css
 ```
 
-CI runs `lint`, `format:check`, `typecheck`, `test`, `build`, a drift check on the generated stylesheet, and `npm pack --dry-run`
-on Node 20 and 22.
+CI runs `lint`, `format:check`, `typecheck`, `test`, `build`, a drift check on
+the generated stylesheet, and `npm pack --dry-run` on Node 22 and 24.
+
+**Contributing needs Node 22.22.2 or newer** (see `.nvmrc`) — jsdom 30, which
+the tests run in, refuses to load on anything older. This is a development
+requirement only: the published package is browser code and has no Node
+constraint of its own.
 
 Two notes on the lint setup. Only `rules-of-hooks` and `exhaustive-deps` are
 enabled from `eslint-plugin-react-hooks`, not its `recommended` preset: v7 also
