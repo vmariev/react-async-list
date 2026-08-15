@@ -1,6 +1,6 @@
 {
   "name": "@vmariev/react-async-list",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Zero-dependency bidirectional infinite scroll for React — reverse (chat) mode, and a headless hook that pairs with any virtualizer.",
   "type": "module",
   "main": "./dist/index.cjs",
