@@ -1,6 +1,6 @@
 {
   "name": "@vmariev/react-async-list",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Zero-dependency bidirectional infinite scroll for React — reverse (chat) mode, and a headless hook that pairs with any virtualizer.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -42,7 +42,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "changeset": "changeset",
-    "version": "changeset version",
+    "version": "changeset version && node scripts/sync-lock-version.mjs",
     "release": "npm run build && changeset publish"
   },
   "keywords": [
